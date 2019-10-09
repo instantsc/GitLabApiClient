@@ -78,11 +78,11 @@ namespace GitLabApiClient.Internal.Http
             await EnsureSuccessStatusCode(responseMessage);
         }
 
-        public async Task<Tuple<T, HttpResponseHeaders>> GetWithHeaders<T>(string url)
+        public async Task<ValueTuple<T, HttpResponseHeaders>> GetWithHeaders<T>(string url)
         {
             var responseMessage = await _client.GetAsync(url);
             await EnsureSuccessStatusCode(responseMessage);
-            return Tuple.Create(await ReadResponse<T>(responseMessage), responseMessage.Headers);
+            return (await ReadResponse<T>(responseMessage), responseMessage.Headers);
         }
 
         private static async Task EnsureSuccessStatusCode(HttpResponseMessage responseMessage)

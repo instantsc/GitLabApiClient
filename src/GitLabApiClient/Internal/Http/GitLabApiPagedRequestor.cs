@@ -20,9 +20,7 @@ namespace GitLabApiClient.Internal.Http
             var result = new List<T>();
 
             //make first request and it will get available pages in the headers
-            var response = await _requestor.GetWithHeaders<IList<T>>(GetPagedUrl(url, 1));
-            var results = response.Item1;
-            var headers = response.Item2;
+            var (results, headers) = await _requestor.GetWithHeaders<IList<T>>(GetPagedUrl(url, 1));
             result.AddRange(results);
             int totalPages = headers.GetFirstHeaderValueOrDefault<int>("X-Total-Pages");
             int nextPage = headers.GetFirstHeaderValueOrDefault<int>("X-Next-Page");
@@ -45,9 +43,7 @@ namespace GitLabApiClient.Internal.Http
             do
             {
                 string pagedUrl = GetPagedUrl(url, nextPage);
-                var response = await _requestor.GetWithHeaders<IList<T>>(pagedUrl);
-                var results = response.Item1;
-                var headers = response.Item2;
+                var (results, headers) = await _requestor.GetWithHeaders<IList<T>>(pagedUrl);
                 result.AddRange(results);
                 nextPage = headers.GetFirstHeaderValueOrDefault<int>("X-Next-Page");
             }
